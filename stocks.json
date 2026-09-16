@@ -1,0 +1,189 @@
+{
+  "stocks": [
+    {
+      "id": "awk-awk",
+      "ticker": "AWK",
+      "symbol": "AWK",
+      "name": "American Water Works",
+      "currency": "USD",
+      "sector": "Utility idrico regolamentato",
+      "description": "American Water Works è la più grande utility regolamentata di acqua e acque reflue degli Stati Uniti. Gestisce circa 80 impianti di trattamento acqua superficiale, 520 impianti di trattamento acque sotterranee e 170 impianti di trattamento acque reflue, con 55.000 miglia di rete di distribuzione, servendo clienti municipali e installazioni militari.",
+      "referencePrice": 136.41,
+      "upperType": "price",
+      "upperValue": 145,
+      "lowerType": "price",
+      "lowerValue": 125,
+      "news": [],
+      "createdAt": "2026-09-15T20:38:02.965Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "clh-clh",
+      "ticker": "CLH",
+      "symbol": "CLH",
+      "name": "Clean Harbors",
+      "currency": "USD",
+      "sector": "Servizi ambientali e industriali",
+      "description": "Clean Harbors è il principale fornitore di servizi ambientali e industriali in Nord America. Opera attraverso due divisioni: Environmental Services (raccolta, trasporto, trattamento, riciclo e smaltimento di rifiuti pericolosi e non, incenerimento, trattamento acque reflue) e Safety-Kleen Sustainability Solutions, su tutto il territorio USA e Canada.",
+      "referencePrice": 318.2,
+      "upperType": "pct",
+      "upperValue": null,
+      "lowerType": "price",
+      "lowerValue": 290,
+      "news": [
+        {
+          "date": "2026-08-12",
+          "headline": "Clean Harbors acquisisce EnviroServe per 470 milioni di dollari",
+          "summary": "L'acquisizione espande l'impronta di Clean Harbors nei servizi ambientali; annunciata insieme ai risultati del secondo trimestre 2026.",
+          "url": "https://ir.cleanharbors.com/news-releases/news-release-details/clean-harbors-acquire-enviroserve-470-million"
+        }
+      ],
+      "createdAt": "2026-09-15T20:32:13.176Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "ifx-ifx-de",
+      "ticker": "IFX",
+      "symbol": "IFX.DE",
+      "name": "Infineon Technologies AG",
+      "currency": "EUR",
+      "sector": "Semiconduttori",
+      "description": "Infineon Technologies è uno dei principali produttori mondiali di semiconduttori e soluzioni per l'efficienza energetica. L'azienda progetta e produce microcontrollori, sensori, componenti per l'automazione industriale e soluzioni per i veicoli elettrici. Opera in settori quali automotive, IoT, cloud e infrastrutture energetiche rinnovabili.",
+      "referencePrice": 53.97,
+      "upperType": "price",
+      "upperValue": 65,
+      "lowerType": "price",
+      "lowerValue": 50,
+      "news": [
+        {
+          "date": "2026-09-14",
+          "headline": "Infineon crolla in Borsa dopo il downgrade di Morgan Stanley",
+          "summary": "Il titolo scende di oltre il 6% dopo che Morgan Stanley ha tagliato il rating a Equalweight e il target price a 65 euro, per dubbi sui ricavi da data center e timori di un rallentamento della domanda legata all'IA.",
+          "url": "https://it.investing.com/news/stock-market-news/perche-il-titolo-infineon-technologies-crolla-oggi-93CH-3547089"
+        },
+        {
+          "date": "2026-08-10",
+          "headline": "Infineon avvia un nuovo buyback da 300 milioni di euro",
+          "summary": "Il riacquisto di azioni proprie (fino a 3 milioni di azioni) è destinato ai piani di partecipazione azionaria dei dipendenti, per contrastare la diluizione; è il secondo programma di questo tipo nel 2026.",
+          "url": "https://www.gurufocus.com/news/9021483/infineon-stock-jumps-38-as-300-million-buyback-begins"
+        },
+        {
+          "date": "2026-08-05",
+          "headline": "Infineon: trimestre record trainato dall'intelligenza artificiale",
+          "summary": "Ricavi del terzo trimestre fiscale 2026 a 4,172 miliardi di euro (+13% su base annua), margine in miglioramento; l'azienda alza le attese per il quarto trimestre a circa 4,7 miliardi di euro di ricavi.",
+          "url": "https://www.investing.com/news/company-news/infineon-q3-fy26-slides-ai-revenue-surge-drives-record-results-93CH-4836812"
+        }
+      ],
+      "createdAt": "2026-09-15T08:46:28.354Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "lr-lr",
+      "ticker": "LR",
+      "symbol": "LR.PA",
+      "name": "Legrand",
+      "currency": "EUR",
+      "sector": "Industria / Apparecchiature elettriche",
+      "description": "Legrand progetta e distribuisce infrastrutture elettriche e digitali per edifici a livello globale: distribuzione e protezione dell'energia, stazioni di ricarica per veicoli elettrici, quadri elettrici residenziali e commerciali, dispositivi di cablaggio, sistemi di building automation e soluzioni per data center.",
+      "referencePrice": 132.95,
+      "upperType": "price",
+      "upperValue": 140,
+      "lowerType": "price",
+      "lowerValue": 120,
+      "news": [
+        {
+          "date": "2026-02-13",
+          "headline": "Legrand avvia un buyback di azioni proprie",
+          "summary": "Programma di riacquisto per 250.000 azioni (circa lo 0,10% del capitale) tra il 13 febbraio e il 10 marzo 2026, prezzo massimo 150 euro, destinato principalmente a piani di azionariato dei dipendenti.",
+          "url": "https://www.legrand.com/en/news/legrand-signs-share-buyback-agreement-1"
+        }
+      ],
+      "createdAt": "2026-09-15T20:23:17.887Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "sy1-sy1-de",
+      "ticker": "SY1",
+      "symbol": "SY1.DE",
+      "name": "Symrise AG",
+      "currency": "EUR",
+      "sector": "Chimica / ingredienti speciali",
+      "description": "Symrise produce fragranze, aromi e ingredienti attivi per l'industria cosmetica, alimentare e farmaceutica, con un forte posizionamento nel segmento premium e sostenibile.",
+      "referencePrice": 88.64,
+      "upperType": "none",
+      "upperValue": null,
+      "lowerType": "price",
+      "lowerValue": 80,
+      "news": [
+        {
+          "date": "2026-09-01",
+          "headline": "Symrise cede il business dei terpeni a Mutares",
+          "summary": "Ceduta AmeriTerpenes (siti in Florida e Georgia, USA) al fondo di private equity Mutares; prezzo non divulgato, per concentrare il gruppo sulle piattaforme di crescita principali.",
+          "url": "https://www.webdisclosure.com/press-release/symrise-ag-etr-sy1-symrise-signs-agreement-to-divest-its-terpene-ingredients-business-to-mutares-se-co-kgaa-vYfZK5XIkAr"
+        },
+        {
+          "date": "2026-07-30",
+          "headline": "Symrise: risultati H1 2026 solidi, guidance confermata",
+          "summary": "Vendite del primo semestre a 2.539 milioni di euro, crescita organica accelerata al 4,5% nel Q2, margine EBITDA adjusted al 21,8%; confermata la guidance 2026.",
+          "url": "https://www.symrise.com/newsroom/article/symrise-reports-solid-h1-2026-performance-with-accelerating-growth-momentum-in-q2/"
+        },
+        {
+          "date": "2026-07-23",
+          "headline": "Symrise acquisisce la francese Floral Concept",
+          "summary": "Accordo (put option) per l'acquisizione della società di ingredienti da profumeria naturale premium di Grasse, per rafforzare il polo dei naturali insieme a Maison Lautier 1795; chiusura prevista nel Q3 2026.",
+          "url": "https://www.symrise.com/newsroom/article/symrise-signs-a-put-option-agreement-to-acquire-floral-concept/"
+        }
+      ],
+      "createdAt": "2026-09-15T08:56:38.000Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "wm-wm",
+      "ticker": "WM",
+      "symbol": "WM",
+      "name": "Waste Management",
+      "currency": "USD",
+      "sector": "Servizi ambientali",
+      "description": "Waste Management fornisce servizi ambientali (raccolta e trasporto rifiuti, impianti di recupero materiali, stazioni di trasferimento, discariche con recupero energetico da biogas) a clienti residenziali, commerciali, industriali e municipali in USA e Canada.",
+      "referencePrice": 217.25,
+      "upperType": "price",
+      "upperValue": 230,
+      "lowerType": "price",
+      "lowerValue": 200,
+      "news": [
+        {
+          "date": "2026-07-23",
+          "headline": "Waste Management alza il dividendo del 14,5% e lancia un buyback da 3 miliardi di dollari",
+          "summary": "Aumento del dividendo 2026 e nuova autorizzazione al riacquisto di azioni proprie fino a 3 miliardi di dollari, segnale di solida generazione di cassa.",
+          "url": "https://www.webull.com/news/15277789136118784"
+        }
+      ],
+      "createdAt": "2026-09-15T20:34:11.422Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    },
+    {
+      "id": "wms-wms",
+      "ticker": "WMS",
+      "symbol": "WMS",
+      "name": "Advanced Drainage Systems",
+      "currency": "USD",
+      "sector": "Gestione acque / Manifattura industriale",
+      "description": "Advanced Drainage Systems produce tubi corrugati termoplastici e prodotti per la gestione delle acque piovane e reflue in Nord America e non solo: tubazioni multistrato in polipropilene/polietilene, camere di infiltrazione, sistemi di depurazione e fosse settiche, attraverso le divisioni Stormwater e Wastewater.",
+      "referencePrice": 127.21,
+      "upperType": "price",
+      "upperValue": 130,
+      "lowerType": "price",
+      "lowerValue": 120,
+      "news": [
+        {
+          "date": "2026-08-06",
+          "headline": "Advanced Drainage Systems alza il dividendo e conferma i buyback",
+          "summary": "Dividendo trimestrale di 0,20 $/azione pagato il 15 settembre 2026; nel trimestre riacquistate 1,6 milioni di azioni per 228,5 milioni di dollari, con 822,5 milioni ancora disponibili per riacquisti futuri.",
+          "url": "https://www.tipranks.com/news/company-announcements/advanced-drainage-systems-declares-dividend-and-highlights-buybacks"
+        }
+      ],
+      "createdAt": "2026-09-15T20:41:52.240Z",
+      "updatedAt": "2026-09-16T00:00:00.000Z"
+    }
+  ]
+}

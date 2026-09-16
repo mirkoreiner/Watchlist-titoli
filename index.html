@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watchlist Titoli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eff1ec;
+    --surface: #ffffff;
+    --surface-2: #e4e8e1;
+    --border: #d3d9ce;
+    --ink: #1c2620;
+    --ink-muted: #5c6b62;
+    --ink-faint: #869084;
+    --accent: #2e4b4b;
+    --accent-strong: #1c3232;
+    --accent-soft: #d8e3df;
+    --good: #2f7a4f;
+    --good-soft: #dcefe2;
+    --bad: #b0392e;
+    --bad-soft: #f7e0dd;
+    --warn: #b8862b;
+    --warn-soft: #f3e8d2;
+    --shadow: 0 1px 2px rgba(28,38,32,0.06), 0 6px 20px -8px rgba(28,38,32,0.18);
+    --radius: 10px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121815; --surface: #1a2320; --surface-2: #212c27; --border: #2e3a34;
+      --ink: #e9ede7; --ink-muted: #9caa9f; --ink-faint: #6d7a72;
+      --accent: #7fbfb0; --accent-strong: #a8d8cc; --accent-soft: #24342f;
+      --good: #5fbe85; --good-soft: #1c3227; --bad: #e06b5e; --bad-soft: #3a231f;
+      --warn: #e0b34f; --warn-soft: #3a2f1c;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); }
+  body {
+    color: var(--ink);
+    font-family: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    padding-inline: 18px;
+    padding-block: 0 40px;
+    -webkit-font-smoothing: antialiased;
+    max-width: 1180px;
+    margin-inline: auto;
+  }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace; font-variant-numeric: tabular-nums; }
+  a { color: var(--accent); }
+
+  header.topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg);
+    padding-block: 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+    margin-bottom: 18px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+  .brand h1 { font-size: 1.34rem; font-weight: 800; letter-spacing: -0.01em; margin: 0; color: var(--accent-strong); }
+  .brand .tag { font-size: 0.72rem; color: var(--ink-faint); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-chip { display: flex; flex-direction: column; gap: 1px; padding: 6px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; min-width: 84px; }
+  .stat-chip .n { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 1.02rem; line-height: 1.1; }
+  .stat-chip .l { font-size: 0.66rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-chip.alert .n { color: var(--bad); }
+
+  button.btn { font-family: inherit; font-weight: 700; font-size: 0.86rem; border-radius: 8px; border: 1px solid transparent; padding: 9px 16px; cursor: pointer; transition: filter 0.12s ease, transform 0.05s ease; }
+  button.btn:active { transform: translateY(1px); }
+  button.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: var(--surface); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--ink); }
+  .btn-ghost:hover { background: var(--surface-2); }
+  .btn-danger { background: transparent; border-color: var(--bad); color: var(--bad); }
+  .btn-danger:hover { background: var(--bad-soft); }
+  .btn-sm { padding: 6px 11px; font-size: 0.78rem; }
+  .btn-icon { padding: 9px 11px; }
+
+  #alertStrip { display: none; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  #alertStrip.show { display: flex; }
+  .alert-row { display: flex; align-items: center; gap: 10px; background: var(--bad-soft); border: 1px solid var(--bad); border-radius: 8px; padding: 9px 13px; font-size: 0.86rem; }
+  .alert-row.up { background: var(--good-soft); border-color: var(--good); }
+  .alert-row b { font-family: "IBM Plex Mono", monospace; }
+  .alert-row .msg { flex: 1; }
+
+  .banner { display: flex; align-items: center; gap: 10px; border-radius: 8px; padding: 10px 13px; font-size: 0.82rem; margin-bottom: 16px; }
+  .banner.warn { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn); }
+  .banner.err { background: var(--bad-soft); color: var(--bad); border: 1px solid var(--bad); }
+  .banner.ok { background: var(--good-soft); color: var(--good); border: 1px solid var(--good); }
+  .banner a { color: inherit; text-decoration: underline; }
+
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .section-head h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-muted); font-weight: 700; margin: 0; }
+
+  .watchlist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 26px; }
+  .row-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .row-main { display: grid; grid-template-columns: 1.5fr 1.7fr 1fr 1.1fr 1.3fr 0.9fr auto; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; }
+  .row-main:hover { background: var(--surface-2); }
+  .cell-ticker { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .cell-ticker .tk { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 0.95rem; }
+  .cell-ticker .ex { font-size: 0.68rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .cell-name { min-width: 0; }
+  .cell-name .nm { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cell-name .sc { font-size: 0.72rem; color: var(--ink-muted); }
+  .cell-price { display: flex; flex-direction: column; gap: 1px; }
+  .cell-price .px { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 0.96rem; }
+  .cell-price .dl { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; }
+  .dl.up { color: var(--good); } .dl.down { color: var(--bad); } .dl.flat { color: var(--ink-faint); }
+  .cell-ref { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; color: var(--ink-muted); }
+  .cell-thresh { display: flex; flex-direction: column; gap: 2px; font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--ink-muted); }
+  .cell-thresh span.up-t { color: var(--good); } .cell-thresh span.dn-t { color: var(--bad); }
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 99px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .pill.ok { background: var(--surface-2); color: var(--ink-muted); }
+  .pill.upper { background: var(--good-soft); color: var(--good); }
+  .pill.lower { background: var(--bad-soft); color: var(--bad); }
+  .pill.pending { background: var(--warn-soft); color: var(--warn); }
+  .cell-caret { color: var(--ink-faint); font-size: 0.8rem; transition: transform 0.15s ease; justify-self: end; }
+  .row-card.expanded .cell-caret { transform: rotate(90deg); }
+
+  .row-detail { display: none; border-top: 1px solid var(--border); background: var(--surface-2); }
+  .row-card.expanded .row-detail { display: block; }
+  .row-detail-inner { padding: 16px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; }
+  .detail-col h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin: 0 0 8px 0; font-weight: 700; }
+  .detail-desc { font-size: 0.88rem; line-height: 1.55; color: var(--ink); margin: 0 0 14px 0; }
+  .meta-line { font-size: 0.76rem; color: var(--ink-muted); margin-bottom: 3px; }
+  .meta-line .mono { color: var(--ink); }
+
+  .news-list { display: flex; flex-direction: column; gap: 10px; max-height: 260px; overflow-y: auto; padding-right: 2px; }
+  .news-item { border-left: 2px solid var(--accent); padding-left: 10px; }
+  .news-item .nd { font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; color: var(--ink-faint); }
+  .news-item .nh { font-weight: 700; font-size: 0.84rem; margin: 2px 0 2px 0; }
+  .news-item .ns { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.4; }
+  .news-item a { font-size: 0.74rem; text-decoration: none; }
+  .news-empty { font-size: 0.82rem; color: var(--ink-faint); font-style: italic; }
+
+  .detail-actions { display: flex; gap: 8px; margin-top: 14px; grid-column: 1 / -1; border-top: 1px dashed var(--border); padding-top: 14px; }
+
+  .form-panel { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; margin-bottom: 18px; }
+  .form-panel.show { display: block; }
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .form-field.span2 { grid-column: span 2; }
+  .form-field.span3 { grid-column: span 3; }
+  .form-field label { font-size: 0.72rem; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-field .hint { font-size: 0.7rem; color: var(--ink-faint); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .form-field input, .form-field select, .form-field textarea { font-family: inherit; font-size: 0.88rem; padding: 8px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); color: var(--ink); }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .form-field textarea { resize: vertical; min-height: 54px; font-family: inherit; }
+  .thresh-pair { display: flex; gap: 6px; }
+  .thresh-pair select { flex: 0 0 auto; width: 84px; }
+  .thresh-pair input { flex: 1; min-width: 0; }
+  .form-actions { display: flex; gap: 8px; margin-top: 16px; grid-column: 1 / -1; align-items: center; }
+  .form-error { color: var(--bad); font-size: 0.78rem; margin-top: 10px; grid-column: 1 / -1; }
+  .form-note { font-size: 0.76rem; color: var(--ink-faint); }
+
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--ink-muted); border: 1px dashed var(--border); border-radius: var(--radius); }
+
+  .info-note { font-size: 0.76rem; color: var(--ink-faint); line-height: 1.5; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 760px) {
+    .row-main { grid-template-columns: 1fr auto; grid-template-areas: "tk px" "nm nm" "st st"; row-gap: 6px; }
+    .cell-ticker { grid-area: tk; }
+    .cell-price { grid-area: px; align-items: flex-end; }
+    .cell-name { grid-area: nm; }
+    .cell-ref, .cell-thresh { display: none; }
+    .cell-caret { display: none; }
+    .cell-status { grid-area: st; }
+    .row-detail-inner { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-field.span2, .form-field.span3 { grid-column: span 1; }
+    .thresh-pair select { width: 74px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <h1>Watchlist Titoli</h1>
+    <span class="tag">Watchlist &amp; soglie di prezzo — su GitHub</span>
+  </div>
+  <div class="stat-chip"><span class="n mono" id="statCount">0</span><span class="l">Titoli</span></div>
+  <div class="stat-chip alert"><span class="n mono" id="statAlerts">0</span><span class="l">Allarmi</span></div>
+  <div class="stat-chip"><span class="n mono" id="statChecked" style="font-size:0.74rem;">—</span><span class="l">Ultimo aggiornamento prezzi</span></div>
+  <button class="btn btn-ghost btn-icon" id="btnRefresh" type="button" title="Lancia subito l'aggiornamento dei prezzi su GitHub">⟳</button>
+  <button class="btn btn-ghost btn-icon" id="btnSettings" type="button" title="Impostazioni">⚙</button>
+  <button class="btn btn-primary" id="btnAddToggle" type="button">+ Aggiungi titolo</button>
+</header>
+
+<div id="banners"></div>
+<div id="alertStrip"></div>
+
+<section id="settingsPanel" class="form-panel" aria-label="Impostazioni">
+  <div class="section-head"><h2>Impostazioni GitHub</h2></div>
+  <p class="form-note">
+    Per salvare modifiche (aggiungere/rimuovere titoli, cambiare soglie) questa pagina scrive direttamente nel tuo repository GitHub tramite le API di GitHub, usando un token che resta salvato solo in questo browser — non viene mai inviato altrove.
+    Crea un token su
+    <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>
+    (fine-grained, limitato a questo repository, permessi "Contents: Read and write" e, se vuoi usare il pulsante ⟳ per aggiornare i prezzi al volo, anche "Actions: Read and write").
+  </p>
+  <div class="form-grid">
+    <div class="form-field"><label for="s-owner">Utente/organizzazione GitHub</label><input type="text" id="s-owner" placeholder="es. mirko"></div>
+    <div class="form-field"><label for="s-repo">Nome repository</label><input type="text" id="s-repo" placeholder="es. watchlist-titoli"></div>
+    <div class="form-field"><label for="s-branch">Branch</label><input type="text" id="s-branch" placeholder="main"></div>
+    <div class="form-field span3"><label for="s-token">Token di accesso personale (fine-grained)</label><input type="password" id="s-token" placeholder="github_pat_..." autocomplete="off"></div>
+  </div>
+  <div class="form-error" id="settingsError" hidden></div>
+  <div class="form-actions">
+    <button type="button" class="btn btn-primary btn-sm" id="btnSettingsSave">Salva impostazioni</button>
+    <button type="button" class="btn btn-ghost btn-sm" id="btnSettingsCancel">Chiudi</button>
+  </div>
+</section>
+
+<section id="addPanel" class="form-panel" aria-label="Aggiungi titolo">
+  <div class="section-head"><h2>Nuovo titolo</h2></div>
+  <form id="addForm">
+    <div class="form-grid">
+      <div class="form-field"><label for="f-ticker">Ticker</label><input type="text" id="f-ticker" placeholder="es. ENEL" required></div>
+      <div class="form-field span2"><label for="f-symbol">Simbolo di quotazione (stile Yahoo Finance)</label><input type="text" id="f-symbol" placeholder="es. ENEL.MI, AAPL, IFX.DE" required></div>
+      <div class="form-field span2"><label for="f-name">Nome società</label><input type="text" id="f-name" placeholder="es. Enel S.p.A." required></div>
+      <div class="form-field"><label for="f-currency">Valuta</label><input type="text" id="f-currency" placeholder="EUR, USD..." maxlength="6"></div>
+      <div class="form-field span3"><label for="f-sector">Settore</label><input type="text" id="f-sector" placeholder="es. Utilities, Tecnologia, Beni di consumo..."></div>
+      <div class="form-field span3"><label for="f-desc">Descrizione business</label><textarea id="f-desc" placeholder="Breve descrizione dell'attività della società"></textarea></div>
+      <div class="form-field"><label for="f-ref">Prezzo di riferimento</label><input type="number" id="f-ref" step="0.0001" placeholder="es. 9.80" required></div>
+      <div class="form-field span2">
+        <label>Soglia rialzo (segnala se il prezzo sale fino a)</label>
+        <div class="thresh-pair">
+          <select id="f-upper-type"><option value="pct">% sopra rif.</option><option value="price">Prezzo assoluto</option><option value="none">Nessuna</option></select>
+          <input type="number" id="f-upper-value" step="0.0001" placeholder="es. 5">
+        </div>
+      </div>
+      <div class="form-field span2">
+        <label>Soglia ribasso (segnala se il prezzo scende fino a)</label>
+        <div class="thresh-pair">
+          <select id="f-lower-type"><option value="pct">% sotto rif.</option><option value="price">Prezzo assoluto</option><option value="none">Nessuna</option></select>
+          <input type="number" id="f-lower-value" step="0.0001" placeholder="es. 5">
+        </div>
+      </div>
+    </div>
+    <div class="form-error" id="addError" hidden></div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" id="btnAddSave">Salva titolo</button>
+      <button type="button" class="btn btn-ghost" id="btnAddCancel">Annulla</button>
+    </div>
+  </form>
+</section>
+
+<section>
+  <div class="section-head"><h2>Watchlist</h2></div>
+  <div class="watchlist" id="watchlist"></div>
+  <div class="empty-state" id="emptyState" hidden></div>
+</section>
+
+<p class="info-note">
+  I prezzi e il P/E vengono aggiornati una volta al giorno (giorni feriali, a mercati chiusi) da una GitHub Action che scrive <code>prices.json</code> in questo stesso repository — oppure quando premi ⟳ per lanciarla subito. Quando un prezzo non è disponibile con una chiusura di borsa recente e certa, il titolo resta "In attesa dati" invece di mostrare un numero vecchio. Le notizie vengono aggiunte manualmente (anche chiedendo a Claude di cercarle e incollandole qui).
+</p>
+
+<script>
+(function () {
+  "use strict";
+
+  var CONFIG_KEY = "wt_github_config_v1";
+  var stocksData = [];
+  var stocksSha = null;
+  var pricesData = { generatedAt: null, quotes: {} };
+  var expandedId = null;
+  var editingId = null;
+  var loadState = "loading"; // loading | ready | error
+
+  // ---------- config ----------
+  function getConfig() {
+    try {
+      return JSON.parse(localStorage.getItem(CONFIG_KEY) || "{}");
+    } catch (e) { return {}; }
+  }
+  function setConfig(cfg) {
+    try { localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); } catch (e) {}
+  }
+  function hasWriteConfig() {
+    var c = getConfig();
+    return !!(c.owner && c.repo && c.token);
+  }
+
+  // ---------- base64/utf8 helpers ----------
+  function b64EncodeUtf8(str) {
+    var bytes = new TextEncoder().encode(str);
+    var binary = "";
+    for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+  function b64DecodeUtf8(b64) {
+    var binary = atob(b64.replace(/\n/g, ""));
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  // ---------- GitHub API ----------
+  function ghHeaders(extra) {
+    var cfg = getConfig();
+    var h = { "Accept": "application/vnd.github+json" };
+    if (cfg.token) h["Authorization"] = "Bearer " + cfg.token;
+    if (extra) Object.keys(extra).forEach(function (k) { h[k] = extra[k]; });
+    return h;
+  }
+
+  function ghGetFile(path) {
+    var cfg = getConfig();
+    var url = "https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/" + path + "?ref=" + encodeURIComponent(cfg.branch || "main");
+    return fetch(url, { headers: ghHeaders() }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error("GitHub API " + res.status + ": " + t); });
+      return res.json();
+    }).then(function (data) {
+      return { json: JSON.parse(b64DecodeUtf8(data.content)), sha: data.sha };
+    });
+  }
+
+  function ghPutFile(path, obj, sha, message) {
+    var cfg = getConfig();
+    var url = "https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/" + path;
+    var body = { message: message, content: b64EncodeUtf8(JSON.stringify(obj, null, 2) + "\n"), branch: cfg.branch || "main" };
+    if (sha) body.sha = sha;
+    return fetch(url, { method: "PUT", headers: ghHeaders({ "Content-Type": "application/json" }), body: JSON.stringify(body) }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error("GitHub API " + res.status + ": " + t); });
+      return res.json();
+    });
+  }
+
+  function ghDispatchWorkflow() {
+    var cfg = getConfig();
+    var url = "https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/actions/workflows/update-prices.yml/dispatches";
+    return fetch(url, { method: "POST", headers: ghHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ ref: cfg.branch || "main" }) }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error("GitHub API " + res.status + ": " + t); });
+    });
+  }
+
+  function saveStocks(newArray, message) {
+    if (!hasWriteConfig()) return Promise.reject(new Error("Configura prima le Impostazioni (icona ingranaggio) con utente, repository e token GitHub."));
+    return ghGetFile("stocks.json").then(function (current) {
+      return ghPutFile("stocks.json", { stocks: newArray }, current.sha, message);
+    }).then(function () {
+      stocksData = newArray;
+    });
+  }
+
+  // ---------- data load ----------
+  function loadData() {
+    loadState = "loading";
+    render();
+    var cfg = getConfig();
+    var base = "";
+    if (cfg.owner && cfg.repo) {
+      base = "https://raw.githubusercontent.com/" + cfg.owner + "/" + cfg.repo + "/" + (cfg.branch || "main") + "/";
+    }
+    Promise.all([
+      fetch(base + "stocks.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { stocks: [] }; }).catch(function () { return { stocks: [] }; }),
+      fetch(base + "prices.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { generatedAt: null, quotes: {} }; }).catch(function () { return { generatedAt: null, quotes: {} }; })
+    ]).then(function (results) {
+      stocksData = results[0].stocks || [];
+      pricesData = results[1] || { generatedAt: null, quotes: {} };
+      loadState = "ready";
+      render();
+    }).catch(function () {
+      loadState = "error";
+      render();
+    });
+  }
+
+  // ---------- helpers ----------
+  function slugify(ticker, symbol) {
+    var base = (ticker + "-" + symbol).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-+|-+$)/g, "");
+    return base.slice(0, 120) || ("titolo-" + Date.now());
+  }
+  function fmtNum(n, decimals) {
+    if (n === null || n === undefined || isNaN(n)) return "—";
+    var d = decimals === undefined ? 2 : decimals;
+    return Number(n).toLocaleString("it-IT", { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function parseFloatOrNull(v) {
+    if (v === "" || v === null || v === undefined) return null;
+    var n = parseFloat(v);
+    return isNaN(n) ? null : n;
+  }
+  function escapeHtml(str) {
+    return String(str == null ? "" : str).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function quoteFor(s) { return (pricesData.quotes && pricesData.quotes[s.symbol]) || {}; }
+  function triggers(s) {
+    var ref = Number(s.referencePrice);
+    var upper = null, lower = null;
+    if (s.upperType === "pct" && s.upperValue != null && s.upperValue !== "") upper = ref * (1 + Number(s.upperValue) / 100);
+    else if (s.upperType === "price" && s.upperValue != null && s.upperValue !== "") upper = Number(s.upperValue);
+    if (s.lowerType === "pct" && s.lowerValue != null && s.lowerValue !== "") lower = ref * (1 - Number(s.lowerValue) / 100);
+    else if (s.lowerType === "price" && s.lowerValue != null && s.lowerValue !== "") lower = Number(s.lowerValue);
+    return { upper: upper, lower: lower };
+  }
+  function statusOf(s) {
+    var q = quoteFor(s);
+    if (q.close === null || q.close === undefined) return "pending";
+    var t = triggers(s);
+    var p = Number(q.close);
+    if (t.upper !== null && p >= t.upper) return "upper";
+    if (t.lower !== null && p <= t.lower) return "lower";
+    return "ok";
+  }
+  function statusLabel(st) {
+    if (st === "upper") return "Sopra soglia";
+    if (st === "lower") return "Sotto soglia";
+    if (st === "pending") return "In attesa dati";
+    return "Nella norma";
+  }
+
+  function showBanner(kind, html, timeout) {
+    var box = document.getElementById("banners");
+    var id = "b" + Date.now();
+    var div = document.createElement("div");
+    div.className = "banner " + kind;
+    div.id = id;
+    div.innerHTML = html;
+    box.appendChild(div);
+    if (timeout) setTimeout(function () { var el = document.getElementById(id); if (el) el.remove(); }, timeout);
+  }
+
+  // ---------- render ----------
+  function render() {
+    var count = stocksData.length;
+    var alerts = stocksData.filter(function (s) { return statusOf(s) === "upper" || statusOf(s) === "lower"; });
+    document.getElementById("statCount").textContent = count;
+    document.getElementById("statAlerts").textContent = alerts.length;
+    document.getElementById("statChecked").textContent = pricesData.generatedAt ? new Date(pricesData.generatedAt).toLocaleString("it-IT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
+
+    var strip = document.getElementById("alertStrip");
+    if (alerts.length) {
+      strip.className = "show";
+      strip.innerHTML = alerts.map(function (s) {
+        var st = statusOf(s);
+        var q = quoteFor(s);
+        var cls = st === "upper" ? "up" : "";
+        var verb = st === "upper" ? "ha superato la soglia di rialzo" : "ha superato la soglia di ribasso";
+        return '<div class="alert-row ' + cls + '"><span class="msg"><b>' + escapeHtml(s.ticker) + '</b> ' + verb + ': prezzo attuale <b>' + fmtNum(q.close) + " " + escapeHtml(s.currency || "") + '</b></span></div>';
+      }).join("");
+    } else {
+      strip.className = ""; strip.innerHTML = "";
+    }
+
+    var list = document.getElementById("watchlist");
+    var empty = document.getElementById("emptyState");
+    if (loadState === "loading" && !count) {
+      list.innerHTML = ""; empty.hidden = false;
+      empty.className = "empty-state"; empty.textContent = "Caricamento dati…";
+      return;
+    }
+    if (loadState === "error") {
+      list.innerHTML = ""; empty.hidden = false;
+      empty.className = "empty-state"; empty.textContent = "Impossibile caricare stocks.json/prices.json. Verifica che il repository e i file esistano.";
+      return;
+    }
+    if (!count) {
+      list.innerHTML = ""; empty.hidden = false;
+      empty.className = "empty-state"; empty.textContent = 'Nessun titolo monitorato. Usa "+ Aggiungi titolo" per iniziare.';
+      return;
+    }
+    empty.hidden = true;
+
+    var sorted = stocksData.slice().sort(function (a, b) { return (a.ticker || "").localeCompare(b.ticker || ""); });
+
+    list.innerHTML = sorted.map(function (s) {
+      var st = statusOf(s);
+      var q = quoteFor(s);
+      var t = triggers(s);
+      var ref = Number(s.referencePrice);
+      var delta = (q.close !== null && q.close !== undefined) ? (Number(q.close) - ref) / ref * 100 : null;
+      var deltaCls = delta === null ? "flat" : (delta > 0.001 ? "up" : (delta < -0.001 ? "down" : "flat"));
+      var deltaTxt = delta === null ? "" : (delta > 0 ? "+" : "") + fmtNum(delta, 2) + "%";
+      var isExpanded = expandedId === s.id;
+      var isEditing = editingId === s.id;
+
+      return '' +
+        '<div class="row-card' + (isExpanded ? " expanded" : "") + '" data-id="' + escapeHtml(s.id) + '">' +
+          '<div class="row-main" data-toggle="' + escapeHtml(s.id) + '">' +
+            '<div class="cell-ticker"><span class="tk">' + escapeHtml(s.ticker) + '</span><span class="ex">' + escapeHtml(s.symbol) + '</span></div>' +
+            '<div class="cell-name"><div class="nm">' + escapeHtml(s.name) + '</div><div class="sc">' + escapeHtml(s.sector || "—") + '</div></div>' +
+            '<div class="cell-price"><span class="px">' + fmtNum(q.close) + (s.currency ? " " + escapeHtml(s.currency) : "") + '</span><span class="dl ' + deltaCls + '">' + deltaTxt + '</span></div>' +
+            '<div class="cell-ref">' + fmtNum(ref) + '</div>' +
+            '<div class="cell-thresh"><span class="up-t">▲ ' + (t.upper !== null ? fmtNum(t.upper) : "—") + '</span><span class="dn-t">▼ ' + (t.lower !== null ? fmtNum(t.lower) : "—") + '</span></div>' +
+            '<div class="cell-status"><span class="pill ' + st + '">' + statusLabel(st) + '</span></div>' +
+            '<span class="cell-caret">▸</span>' +
+          '</div>' +
+          '<div class="row-detail"><div class="row-detail-inner">' + renderDetail(s, isEditing) + '</div></div>' +
+        '</div>';
+    }).join("");
+
+    Array.prototype.forEach.call(list.querySelectorAll("[data-toggle]"), function (el) {
+      el.addEventListener("click", function () {
+        var id = el.getAttribute("data-toggle");
+        expandedId = expandedId === id ? null : id;
+        editingId = null;
+        render();
+      });
+    });
+    wireDetailActions();
+  }
+
+  function renderDetail(s, isEditing) {
+    if (isEditing) return renderEditForm(s);
+    var q = quoteFor(s);
+    var news = Array.isArray(s.news) ? s.news.slice().sort(function (a, b) { return (b.date || "").localeCompare(a.date || ""); }) : [];
+    var newsHtml = news.length ? news.slice(0, 6).map(function (n) {
+      return '<div class="news-item">' +
+        '<div class="nd">' + escapeHtml(n.date || "") + '</div>' +
+        '<div class="nh">' + escapeHtml(n.headline || "") + '</div>' +
+        (n.summary ? '<div class="ns">' + escapeHtml(n.summary) + '</div>' : '') +
+        (n.url ? '<a href="' + escapeHtml(n.url) + '" target="_blank" rel="noopener">Fonte ↗</a>' : '') +
+        '</div>';
+    }).join("") : '<div class="news-empty">Nessuna notizia registrata. Puoi chiedere a Claude di cercarle e poi incollarle qui in modifica.</div>';
+
+    return '' +
+      '<div class="detail-col">' +
+        '<h3>Business</h3>' +
+        '<p class="detail-desc">' + (s.description ? escapeHtml(s.description) : '<em>Nessuna descrizione inserita.</em>') + '</p>' +
+        '<div class="meta-line">Prezzo riferimento: <span class="mono">' + fmtNum(s.referencePrice) + (s.currency ? " " + escapeHtml(s.currency) : "") + '</span></div>' +
+        '<div class="meta-line">Ultima chiusura precedente: <span class="mono">' + (q.previousClose != null ? fmtNum(q.previousClose) : "—") + '</span></div>' +
+        '<div class="meta-line">P/E (Price/Earnings): <span class="mono">' + (q.peRatio != null ? fmtNum(q.peRatio) : "—") + '</span></div>' +
+        '<div class="meta-line">Prezzo risalente a: <span class="mono">' + (q.asOfDate ? escapeHtml(q.asOfDate) : "non disponibile") + '</span></div>' +
+      '</div>' +
+      '<div class="detail-col">' +
+        '<h3>Notizie rilevanti</h3>' +
+        '<div class="news-list">' + newsHtml + '</div>' +
+      '</div>' +
+      '<div class="detail-actions">' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-edit="' + escapeHtml(s.id) + '">Modifica</button>' +
+        '<button type="button" class="btn btn-danger btn-sm" data-delete="' + escapeHtml(s.id) + '">Elimina titolo</button>' +
+      '</div>';
+  }
+
+  function renderEditForm(s) {
+    return '' +
+      '<form class="edit-form" data-editform="' + escapeHtml(s.id) + '" style="grid-column:1/-1; display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">' +
+        field("Ticker", 'e-ticker', 'text', s.ticker, false, "") +
+        field("Simbolo di quotazione", 'e-symbol', 'text', s.symbol, false, "") +
+        field("Nome società", 'e-name', 'text', s.name, false, "") +
+        field("Valuta", 'e-currency', 'text', s.currency, false, "") +
+        field("Settore", 'e-sector', 'text', s.sector, false, "span2") +
+        textareaField("Descrizione business", 'e-desc', s.description, "span3") +
+        field("Prezzo di riferimento", 'e-ref', 'number', s.referencePrice, true, "") +
+        threshField("Soglia rialzo", 'e-upper', s.upperType, s.upperValue) +
+        threshField("Soglia ribasso", 'e-lower', s.lowerType, s.lowerValue) +
+        '<div class="form-error" data-editerror hidden></div>' +
+        '<div class="form-actions">' +
+          '<button type="submit" class="btn btn-primary btn-sm">Salva modifiche</button>' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-canceledit>Annulla</button>' +
+        '</div>' +
+      '</form>';
+  }
+
+  function field(label, id, type, value, isNumber, span) {
+    return '<div class="form-field ' + span + '"><label for="' + id + '">' + label + '</label>' +
+      '<input type="' + type + '" id="' + id + '" ' + (isNumber ? 'step="0.0001"' : '') + ' value="' + escapeHtml(value == null ? "" : value) + '"></div>';
+  }
+  function textareaField(label, id, value, span) {
+    return '<div class="form-field ' + span + '"><label for="' + id + '">' + label + '</label><textarea id="' + id + '">' + escapeHtml(value || "") + '</textarea></div>';
+  }
+  function threshField(label, prefix, type, value) {
+    type = type || "none";
+    return '<div class="form-field span2"><label>' + label + '</label><div class="thresh-pair">' +
+      '<select id="' + prefix + '-type">' +
+        '<option value="pct"' + (type === "pct" ? " selected" : "") + '>% dal rif.</option>' +
+        '<option value="price"' + (type === "price" ? " selected" : "") + '>Prezzo assoluto</option>' +
+        '<option value="none"' + (type === "none" ? " selected" : "") + '>Nessuna</option>' +
+      '</select>' +
+      '<input type="number" step="0.0001" id="' + prefix + '-value" value="' + escapeHtml(value == null ? "" : value) + '"></div></div>';
+  }
+
+  function wireDetailActions() {
+    var list = document.getElementById("watchlist");
+    Array.prototype.forEach.call(list.querySelectorAll("[data-edit]"), function (btn) {
+      btn.addEventListener("click", function (e) { e.stopPropagation(); editingId = btn.getAttribute("data-edit"); render(); });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll("[data-canceledit]"), function (btn) {
+      btn.addEventListener("click", function (e) { e.stopPropagation(); editingId = null; render(); });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll("[data-delete]"), function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var id = btn.getAttribute("data-delete");
+        if (!confirm("Eliminare questo titolo dalla watchlist?")) return;
+        btn.disabled = true;
+        var newArray = stocksData.filter(function (s) { return s.id !== id; });
+        saveStocks(newArray, "Rimuove titolo " + id).then(function () {
+          expandedId = null; render();
+          showBanner("ok", "Titolo eliminato e salvato su GitHub.", 4000);
+        }).catch(function (err) {
+          btn.disabled = false;
+          showBanner("err", "Errore nell'eliminazione: " + escapeHtml(err.message), 8000);
+        });
+      });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll("[data-editform]"), function (form) {
+      form.addEventListener("click", function (e) { e.stopPropagation(); });
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var id = form.getAttribute("data-editform");
+        var errEl = form.querySelector("[data-editerror]");
+        var ref = parseFloat(document.getElementById("e-ref").value);
+        if (isNaN(ref) || ref <= 0) { errEl.hidden = false; errEl.textContent = "Il prezzo di riferimento deve essere un numero positivo."; return; }
+        var ticker = document.getElementById("e-ticker").value.trim();
+        var symbol = document.getElementById("e-symbol").value.trim();
+        var name = document.getElementById("e-name").value.trim();
+        if (!ticker || !symbol || !name) { errEl.hidden = false; errEl.textContent = "Ticker, simbolo e nome sono obbligatori."; return; }
+        var submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        var newArray = stocksData.map(function (s) {
+          if (s.id !== id) return s;
+          return Object.assign({}, s, {
+            ticker: ticker, symbol: symbol, name: name,
+            currency: document.getElementById("e-currency").value.trim(),
+            sector: document.getElementById("e-sector").value.trim(),
+            description: document.getElementById("e-desc").value.trim(),
+            referencePrice: ref,
+            upperType: document.getElementById("e-upper-type").value,
+            upperValue: parseFloatOrNull(document.getElementById("e-upper-value").value),
+            lowerType: document.getElementById("e-lower-type").value,
+            lowerValue: parseFloatOrNull(document.getElementById("e-lower-value").value),
+            updatedAt: new Date().toISOString()
+          });
+        });
+        saveStocks(newArray, "Modifica titolo " + id).then(function () {
+          editingId = null; render();
+          showBanner("ok", "Modifiche salvate su GitHub.", 4000);
+        }).catch(function (err) {
+          submitBtn.disabled = false;
+          errEl.hidden = false; errEl.textContent = "Errore nel salvataggio: " + err.message;
+        });
+      });
+    });
+  }
+
+  // ---------- add form ----------
+  var addPanel = document.getElementById("addPanel");
+  var settingsPanel = document.getElementById("settingsPanel");
+  document.getElementById("btnAddToggle").addEventListener("click", function () {
+    settingsPanel.classList.remove("show");
+    addPanel.classList.toggle("show");
+  });
+  document.getElementById("btnAddCancel").addEventListener("click", function () {
+    addPanel.classList.remove("show");
+    document.getElementById("addForm").reset();
+  });
+  document.getElementById("addForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var errEl = document.getElementById("addError");
+    errEl.hidden = true;
+    var ticker = document.getElementById("f-ticker").value.trim();
+    var symbol = document.getElementById("f-symbol").value.trim();
+    var name = document.getElementById("f-name").value.trim();
+    var ref = parseFloat(document.getElementById("f-ref").value);
+    if (!ticker || !symbol || !name || isNaN(ref) || ref <= 0) {
+      errEl.hidden = false; errEl.textContent = "Compila ticker, simbolo, nome e un prezzo di riferimento valido.";
+      return;
+    }
+    var id = slugify(ticker, symbol);
+    if (stocksData.some(function (s) { return s.id === id; })) {
+      errEl.hidden = false; errEl.textContent = "Un titolo con questo ticker e simbolo esiste già.";
+      return;
+    }
+    var now = new Date().toISOString();
+    var newStock = {
+      id: id, ticker: ticker, symbol: symbol, name: name,
+      currency: document.getElementById("f-currency").value.trim(),
+      sector: document.getElementById("f-sector").value.trim(),
+      description: document.getElementById("f-desc").value.trim(),
+      referencePrice: ref,
+      upperType: document.getElementById("f-upper-type").value,
+      upperValue: parseFloatOrNull(document.getElementById("f-upper-value").value),
+      lowerType: document.getElementById("f-lower-type").value,
+      lowerValue: parseFloatOrNull(document.getElementById("f-lower-value").value),
+      news: [], createdAt: now, updatedAt: now
+    };
+    var btn = document.getElementById("btnAddSave");
+    btn.disabled = true;
+    saveStocks(stocksData.concat([newStock]), "Aggiunge titolo " + id).then(function () {
+      btn.disabled = false;
+      addPanel.classList.remove("show");
+      document.getElementById("addForm").reset();
+      render();
+      showBanner("ok", "Titolo aggiunto e salvato su GitHub. Verrà incluso automaticamente nel prossimo aggiornamento prezzi notturno (legge la lista direttamente da stocks.json).", 8000);
+    }).catch(function (err) {
+      btn.disabled = false;
+      errEl.hidden = false; errEl.textContent = "Errore nel salvataggio: " + err.message;
+    });
+  });
+
+  // ---------- settings ----------
+  document.getElementById("btnSettings").addEventListener("click", function () {
+    addPanel.classList.remove("show");
+    var cfg = getConfig();
+    document.getElementById("s-owner").value = cfg.owner || "";
+    document.getElementById("s-repo").value = cfg.repo || "";
+    document.getElementById("s-branch").value = cfg.branch || "main";
+    document.getElementById("s-token").value = cfg.token || "";
+    settingsPanel.classList.toggle("show");
+  });
+  document.getElementById("btnSettingsCancel").addEventListener("click", function () {
+    settingsPanel.classList.remove("show");
+  });
+  document.getElementById("btnSettingsSave").addEventListener("click", function () {
+    var owner = document.getElementById("s-owner").value.trim();
+    var repo = document.getElementById("s-repo").value.trim();
+    var branch = document.getElementById("s-branch").value.trim() || "main";
+    var token = document.getElementById("s-token").value.trim();
+    var errEl = document.getElementById("settingsError");
+    if (!owner || !repo) {
+      errEl.hidden = false; errEl.textContent = "Utente/organizzazione e nome del repository sono obbligatori.";
+      return;
+    }
+    errEl.hidden = true;
+    setConfig({ owner: owner, repo: repo, branch: branch, token: token });
+    settingsPanel.classList.remove("show");
+    showBanner("ok", "Impostazioni salvate in questo browser. Ricarico i dati dal repository…", 4000);
+    loadData();
+  });
+
+  // ---------- manual refresh ----------
+  document.getElementById("btnRefresh").addEventListener("click", function () {
+    var btn = document.getElementById("btnRefresh");
+    if (!hasWriteConfig()) {
+      showBanner("warn", "Configura prima le Impostazioni (icona ingranaggio) con un token che abbia anche il permesso Actions: Read and write.", 7000);
+      return;
+    }
+    btn.disabled = true;
+    ghDispatchWorkflow().then(function () {
+      showBanner("ok", "Aggiornamento prezzi avviato su GitHub Actions. Di solito impiega circa un minuto: questa pagina ricaricherà i dati automaticamente tra poco.", 8000);
+      setTimeout(function () { loadData(); }, 75000);
+      setTimeout(function () { btn.disabled = false; }, 5000);
+    }).catch(function (err) {
+      btn.disabled = false;
+      showBanner("err", "Impossibile avviare l'aggiornamento: " + escapeHtml(err.message), 9000);
+    });
+  });
+
+  // ---------- boot ----------
+  var cfgAtBoot = getConfig();
+  if (!cfgAtBoot.owner || !cfgAtBoot.repo) {
+    showBanner("warn", "Configura il collegamento a GitHub dall'icona ⚙ per caricare e poter modificare la watchlist (finché non lo fai, provo comunque a leggere i file locali).");
+  }
+  loadData();
+})();
+</script>
+</body>
+</html>
