@@ -1,12 +1,61 @@
 {
-  "generatedAt": "2026-09-15T21:45:00Z",
+  "generatedAt": "2026-09-16T19:46:05+00:00",
   "quotes": {
-    "AWK": { "close": 138.02, "previousClose": 138.92, "asOfDate": "2026-09-15", "currency": "USD", "peRatio": 24.08, "alertStatus": "none" },
-    "CLH": { "close": null, "previousClose": null, "asOfDate": null, "currency": "USD", "peRatio": 37.93, "alertStatus": "none" },
-    "IFX.DE": { "close": null, "previousClose": null, "asOfDate": null, "currency": "EUR", "peRatio": 63.63, "alertStatus": "none" },
-    "LR.PA": { "close": 132.95, "previousClose": 132.35, "asOfDate": "2026-09-15", "currency": "EUR", "peRatio": 28.37, "alertStatus": "none" },
-    "SY1.DE": { "close": 89.4, "previousClose": 88.24, "asOfDate": "2026-09-15", "currency": "EUR", "peRatio": 50.17, "alertStatus": "none" },
-    "WM": { "close": 217.25, "previousClose": 217.25, "asOfDate": "2026-09-15", "currency": "USD", "peRatio": 30.97, "alertStatus": "none" },
-    "WMS": { "close": null, "previousClose": null, "asOfDate": null, "currency": "USD", "peRatio": 25.16, "alertStatus": "none" }
+    "AWK": {
+      "close": 137.82,
+      "previousClose": 138.02,
+      "asOfDate": "2026-09-16",
+      "currency": "USD",
+      "peRatio": 23.89,
+      "alertStatus": "none"
+    },
+    "CLH": {
+      "close": 319.695,
+      "previousClose": 318.2,
+      "asOfDate": "2026-09-16",
+      "currency": "USD",
+      "peRatio": 38.8,
+      "alertStatus": "none"
+    },
+    "IFX.DE": {
+      "close": 55.0,
+      "previousClose": 54.33,
+      "asOfDate": "2026-09-16",
+      "currency": "EUR",
+      "peRatio": 67.07,
+      "alertStatus": "none"
+    },
+    "LR.PA": {
+      "close": 135.3,
+      "previousClose": 132.95,
+      "asOfDate": "2026-09-16",
+      "currency": "EUR",
+      "peRatio": 27.22,
+      "alertStatus": "none"
+    },
+    "SY1.DE": {
+      "close": 91.46,
+      "previousClose": 89.4,
+      "asOfDate": "2026-09-16",
+      "currency": "EUR",
+      "peRatio": 51.67,
+      "alertStatus": "none"
+    },
+    "WM": {
+      "close": 214.22,
+      "previousClose": 217.25,
+      "asOfDate": "2026-09-16",
+      "currency": "USD",
+      "peRatio": 30.34,
+      "alertStatus": "none"
+    },
+    "WMS": {
+      "close": 125.94,
+      "previousClose": 127.21,
+      "asOfDate": "2026-09-16",
+      "currency": "USD",
+      "peRatio": 21.45,
+      "alertStatus": "none"
+    }
   }
 }
