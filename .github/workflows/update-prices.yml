@@ -1,0 +1,42 @@
+name: Aggiorna prezzi Watchlist Titoli
+
+on:
+  schedule:
+    # 21:10 UTC, dal lunedì al venerdì: dopo la chiusura di Wall Street
+    # (20:00 UTC in ora legale USA, 21:00 UTC in ora solare) e delle borse
+    # europee, con un margine di sicurezza.
+    - cron: "10 21 * * 1-5"
+  workflow_dispatch: {}   # permette di lanciarlo a mano da GitHub o dal pulsante ⟳ nella pagina
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Imposta Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installa dipendenze
+        run: pip install yfinance
+
+      - name: Scarica i prezzi e calcola gli allarmi
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_TO: ${{ secrets.SMTP_TO }}
+        run: python fetch_prices.py
+
+      - name: Salva prices.json nel repository
+        run: |
+          git config user.name "watchlist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add prices.json
+          git diff --cached --quiet || git commit -m "Aggiorna prezzi $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
