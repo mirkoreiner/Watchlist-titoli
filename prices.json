@@ -1,61 +1,61 @@
 {
-  "generatedAt": "2026-09-22T00:01:44+00:00",
+  "generatedAt": "2026-09-22T23:34:31+00:00",
   "quotes": {
     "AWK": {
-      "close": NaN,
-      "previousClose": 135.9,
-      "asOfDate": "2026-09-21",
+      "close": 133.82,
+      "previousClose": 133.97,
+      "asOfDate": "2026-09-22",
       "currency": "USD",
-      "peRatio": 23.18,
+      "peRatio": 23.19,
       "alertStatus": "none"
     },
     "CLH": {
-      "close": NaN,
-      "previousClose": 315.8,
-      "asOfDate": "2026-09-21",
+      "close": 312.85,
+      "previousClose": 311.43,
+      "asOfDate": "2026-09-22",
       "currency": "USD",
-      "peRatio": 37.79,
+      "peRatio": 37.97,
       "alertStatus": "none"
     },
     "IFX.DE": {
       "close": NaN,
-      "previousClose": 55.86,
-      "asOfDate": "2026-09-21",
+      "previousClose": 58.29,
+      "asOfDate": "2026-09-22",
       "currency": "EUR",
-      "peRatio": 71.09,
+      "peRatio": 73.33,
       "alertStatus": "none"
     },
     "LR.PA": {
       "close": NaN,
-      "previousClose": 135.8,
-      "asOfDate": "2026-09-21",
+      "previousClose": 138.85,
+      "asOfDate": "2026-09-22",
       "currency": "EUR",
-      "peRatio": 27.94,
+      "peRatio": 28.26,
       "alertStatus": "none"
     },
     "SY1.DE": {
       "close": NaN,
-      "previousClose": 89.02,
-      "asOfDate": "2026-09-21",
+      "previousClose": 91.1,
+      "asOfDate": "2026-09-22",
       "currency": "EUR",
-      "peRatio": 51.47,
+      "peRatio": 52.77,
       "alertStatus": "none"
     },
     "WM": {
-      "close": NaN,
-      "previousClose": 211.1,
-      "asOfDate": "2026-09-21",
+      "close": 207.68,
+      "previousClose": 207.04,
+      "asOfDate": "2026-09-22",
       "currency": "USD",
-      "peRatio": 29.28,
+      "peRatio": 29.42,
       "alertStatus": "none"
     },
     "WMS": {
-      "close": NaN,
-      "previousClose": 126.05,
-      "asOfDate": "2026-09-21",
+      "close": 130.73,
+      "previousClose": 126.88,
+      "asOfDate": "2026-09-22",
       "currency": "USD",
-      "peRatio": 21.61,
-      "alertStatus": "none"
+      "peRatio": 22.27,
+      "alertStatus": "upper"
     }
   }
 }
