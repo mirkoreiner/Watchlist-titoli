@@ -1,61 +1,61 @@
 {
-  "generatedAt": "2026-09-22T23:34:31+00:00",
+  "generatedAt": "2026-09-23T23:37:07+00:00",
   "quotes": {
     "AWK": {
-      "close": 133.82,
+      "close": 133.06,
       "previousClose": 133.97,
-      "asOfDate": "2026-09-22",
+      "asOfDate": "2026-09-23",
       "currency": "USD",
-      "peRatio": 23.19,
+      "peRatio": 23.06,
       "alertStatus": "none"
     },
     "CLH": {
-      "close": 312.85,
+      "close": 313.15,
       "previousClose": 311.43,
-      "asOfDate": "2026-09-22",
+      "asOfDate": "2026-09-23",
       "currency": "USD",
-      "peRatio": 37.97,
+      "peRatio": 37.77,
       "alertStatus": "none"
     },
     "IFX.DE": {
       "close": NaN,
-      "previousClose": 58.29,
-      "asOfDate": "2026-09-22",
+      "previousClose": 60.13,
+      "asOfDate": "2026-09-23",
       "currency": "EUR",
-      "peRatio": 73.33,
+      "peRatio": 71.43,
       "alertStatus": "none"
     },
     "LR.PA": {
       "close": NaN,
-      "previousClose": 138.85,
-      "asOfDate": "2026-09-22",
+      "previousClose": 140.45,
+      "asOfDate": "2026-09-23",
       "currency": "EUR",
-      "peRatio": 28.26,
+      "peRatio": 27.8,
       "alertStatus": "none"
     },
     "SY1.DE": {
       "close": NaN,
-      "previousClose": 91.1,
-      "asOfDate": "2026-09-22",
+      "previousClose": 93.4,
+      "asOfDate": "2026-09-23",
       "currency": "EUR",
-      "peRatio": 52.77,
+      "peRatio": 52.21,
       "alertStatus": "none"
     },
     "WM": {
-      "close": 207.68,
+      "close": 207.88,
       "previousClose": 207.04,
-      "asOfDate": "2026-09-22",
+      "asOfDate": "2026-09-23",
       "currency": "USD",
-      "peRatio": 29.42,
+      "peRatio": 29.44,
       "alertStatus": "none"
     },
     "WMS": {
-      "close": 130.73,
+      "close": 129.74,
       "previousClose": 126.88,
-      "asOfDate": "2026-09-22",
+      "asOfDate": "2026-09-23",
       "currency": "USD",
-      "peRatio": 22.27,
-      "alertStatus": "upper"
+      "peRatio": 22.1,
+      "alertStatus": "none"
     }
   }
 }
