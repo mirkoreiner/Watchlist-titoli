@@ -53,6 +53,18 @@ def fetch_quote(symbol: str):
     close = float(hist.iloc[-1]["Close"])
     previous_close = float(hist.iloc[-2]["Close"]) if len(hist) >= 2 else None
 
+    # yfinance a volte restituisce NaN per la chiusura di alcuni titoli (in
+    # particolare su alcune borse europee), tipicamente per un glitch dei
+    # dati sorgente. NaN non è un valore JSON valido: se scritto nel file
+    # con json.dump manderebbe in errore il parsing lato browser dell'INTERO
+    # file (non solo del titolo interessato), facendo sparire tutti i prezzi
+    # dall'app. Trattiamo quindi un close NaN come "nessun dato disponibile"
+    # per questo titolo, esattamente come se la cronologia fosse vuota.
+    if close != close:  # NaN è l'unico valore che non è uguale a se stesso
+        return None
+    if previous_close is not None and previous_close != previous_close:
+        previous_close = None
+
     currency = None
     pe_ratio = None
     try:
@@ -65,7 +77,7 @@ def fetch_quote(symbol: str):
         if not currency:
             currency = info.get("currency")
         pe = info.get("trailingPE")
-        if isinstance(pe, (int, float)):
+        if isinstance(pe, (int, float)) and pe == pe:  # esclude anche qui i NaN
             pe_ratio = round(pe, 2)
     except Exception:
         pass
