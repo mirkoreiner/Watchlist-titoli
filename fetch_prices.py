@@ -23,6 +23,7 @@ import ssl
 from datetime import datetime, timezone
 from email.mime.text import MIMEText
 
+import requests
 import yfinance as yf
 
 STOCKS_FILE = "stocks.json"
@@ -53,13 +54,13 @@ def fetch_quote(symbol: str):
     close = float(hist.iloc[-1]["Close"])
     previous_close = float(hist.iloc[-2]["Close"]) if len(hist) >= 2 else None
 
-    # yfinance a volte restituisce NaN per la chiusura di alcuni titoli (in
-    # particolare su alcune borse europee), tipicamente per un glitch dei
-    # dati sorgente. NaN non è un valore JSON valido: se scritto nel file
-    # con json.dump manderebbe in errore il parsing lato browser dell'INTERO
-    # file (non solo del titolo interessato), facendo sparire tutti i prezzi
-    # dall'app. Trattiamo quindi un close NaN come "nessun dato disponibile"
-    # per questo titolo, esattamente come se la cronologia fosse vuota.
+    # Yahoo Finance a volte restituisce Close = NaN per l'ultimo giorno di
+    # alcuni titoli (in particolare su alcune borse europee). NaN non è un
+    # valore JSON valido (romperebbe il file per l'intera app), e comunque
+    # vogliamo il prezzo di OGGI, non un giorno precedente spacciato per
+    # quello odierno: se il giorno più recente è NaN trattiamo il dato come
+    # assente, così il chiamante può provare una fonte di riserva (Stooq)
+    # prima di arrendersi.
     if close != close:  # NaN è l'unico valore che non è uguale a se stesso
         return None
     if previous_close is not None and previous_close != previous_close:
@@ -89,6 +90,68 @@ def fetch_quote(symbol: str):
         "currency": currency,
         "peRatio": pe_ratio,
     }
+
+
+# Fonte di riserva quando Yahoo Finance non ha una chiusura fresca per un
+# titolo (capita più spesso per alcune borse europee). Stooq è un fornitore
+# di dati di mercato pubblico e gratuito (non è il sito ufficiale della
+# borsa, ma pubblica dati di chiusura sourced dai mercati reali), con un
+# semplice export CSV. La mappatura dei simboli qui sotto è un primo
+# tentativo plausibile: va confermata/corretta al primo test reale su
+# GitHub Actions, verificando che la data restituita sia davvero quella
+# odierna (o comunque abbastanza fresca) e non un errore silenzioso.
+STOOQ_SYMBOL_MAP = {
+    "IFX.DE": "ifx.de",
+    "SY1.DE": "sy1.de",
+    "LR.PA": "lr.fr",
+}
+
+
+def fetch_quote_stooq(symbol: str):
+    stooq_symbol = STOOQ_SYMBOL_MAP.get(symbol)
+    if not stooq_symbol:
+        return None
+    try:
+        resp = requests.get(
+            "https://stooq.com/q/d/l/",
+            params={"s": stooq_symbol, "i": "d"},
+            timeout=15,
+            headers={"User-Agent": "Mozilla/5.0"},
+        )
+        resp.raise_for_status()
+        lines = [ln for ln in resp.text.strip().splitlines() if ln.strip()]
+        if len(lines) < 2:
+            return None  # nessun dato: simbolo sconosciuto a Stooq o non disponibile
+        header = lines[0].split(",")
+        last_row = dict(zip(header, lines[-1].split(",")))
+        date_str = last_row.get("Date")
+        close_str = last_row.get("Close")
+        if not date_str or not close_str:
+            return None
+        quote_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        close = float(close_str)
+        if close != close:
+            return None
+
+        previous_close = None
+        if len(lines) >= 3:
+            prev_row = dict(zip(header, lines[-2].split(",")))
+            try:
+                pc = float(prev_row.get("Close"))
+                previous_close = pc if pc == pc else None
+            except (TypeError, ValueError):
+                previous_close = None
+
+        return {
+            "close": round(close, 4),
+            "previousClose": round(previous_close, 4) if previous_close is not None else None,
+            "date": quote_date,
+            "currency": None,  # Stooq non indica la valuta nel CSV: la deduciamo da stocks.json
+            "peRatio": None,  # Stooq non fornisce il P/E
+        }
+    except Exception as exc:
+        print(f"Stooq: errore nello scaricare {symbol} ({stooq_symbol}): {exc}")
+        return None
 
 
 def is_fresh_enough(quote_date, today) -> bool:
@@ -172,7 +235,26 @@ def main():
         try:
             quote = fetch_quote(symbol)
         except Exception as exc:
-            print(f"Errore nello scaricare {symbol}: {exc}")
+            print(f"Errore nello scaricare {symbol} da Yahoo Finance: {exc}")
+
+        # Vogliamo assolutamente il prezzo di OGGI: se Yahoo Finance non ce
+        # l'ha (dato mancante/NaN o troppo vecchio), proviamo Stooq come
+        # fonte di riserva prima di arrenderci e segnare "non disponibile".
+        if not (quote and is_fresh_enough(quote["date"], today)):
+            stooq_quote = None
+            try:
+                stooq_quote = fetch_quote_stooq(symbol)
+            except Exception as exc:
+                print(f"Errore nello scaricare {symbol} da Stooq: {exc}")
+            if stooq_quote and is_fresh_enough(stooq_quote["date"], today):
+                # Stooq non fornisce valuta/P-E: li recuperiamo da Yahoo se
+                # disponibili (anche se il suo prezzo era scartato), altrimenti
+                # lasciamo che il fallback su stock.get("currency") più sotto
+                # se ne occupi.
+                stooq_quote["currency"] = stooq_quote["currency"] or (quote or {}).get("currency")
+                stooq_quote["peRatio"] = stooq_quote["peRatio"] or (quote or {}).get("peRatio")
+                quote = stooq_quote
+                print(f"{symbol}: usato Stooq come fonte di riserva (Yahoo non aveva il dato di oggi).")
 
         if quote and is_fresh_enough(quote["date"], today):
             status = compute_alert_status(stock, quote["close"])
