@@ -20,6 +20,7 @@ import json
 import os
 import smtplib
 import ssl
+import time
 from datetime import datetime, timezone
 from email.mime.text import MIMEText
 
@@ -29,6 +30,8 @@ import yfinance as yf
 STOCKS_FILE = "stocks.json"
 PRICES_FILE = "prices.json"
 MAX_STALE_DAYS = 3
+YAHOO_RETRY_ATTEMPTS = 3
+YAHOO_RETRY_DELAY_SECONDS = 8
 
 
 def load_stocks():
@@ -90,6 +93,33 @@ def fetch_quote(symbol: str):
         "currency": currency,
         "peRatio": pe_ratio,
     }
+
+
+def fetch_quote_with_retry(symbol: str):
+    """Come fetch_quote, ma riprova più volte prima di arrendersi.
+
+    Serve contro i rari intoppi in cui Yahoo Finance non risponde
+    correttamente per l'intera esecuzione (successo a metà, ma nessun dato
+    per nessun titolo) — capitato una volta il 28-29 settembre: bastava
+    riprovare pochi minuti dopo perché tornasse tutto normale. Con questo
+    ritentativo automatico, un intoppo così non lascia più l'app ferma fino
+    alla prossima esecuzione programmata del giorno feriale successivo.
+    """
+    last_error = None
+    for attempt in range(1, YAHOO_RETRY_ATTEMPTS + 1):
+        try:
+            quote = fetch_quote(symbol)
+            if quote is not None:
+                return quote
+            print(f"{symbol}: tentativo {attempt}/{YAHOO_RETRY_ATTEMPTS} su Yahoo Finance senza un dato utilizzabile.")
+        except Exception as exc:
+            last_error = exc
+            print(f"{symbol}: tentativo {attempt}/{YAHOO_RETRY_ATTEMPTS} su Yahoo Finance fallito ({exc}).")
+        if attempt < YAHOO_RETRY_ATTEMPTS:
+            time.sleep(YAHOO_RETRY_DELAY_SECONDS)
+    if last_error:
+        print(f"{symbol}: tutti i {YAHOO_RETRY_ATTEMPTS} tentativi su Yahoo Finance sono falliti, ultimo errore: {last_error}")
+    return None
 
 
 # Fonte di riserva quando Yahoo Finance non ha una chiusura fresca per un
@@ -233,7 +263,7 @@ def main():
 
         quote = None
         try:
-            quote = fetch_quote(symbol)
+            quote = fetch_quote_with_retry(symbol)
         except Exception as exc:
             print(f"Errore nello scaricare {symbol} da Yahoo Finance: {exc}")
 
