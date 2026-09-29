@@ -1,60 +1,60 @@
 {
-  "generatedAt": "2026-09-29T00:56:59+00:00",
+  "generatedAt": "2026-09-29T20:07:10+00:00",
   "quotes": {
     "AWK": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 129.79,
+      "previousClose": 128.93,
+      "asOfDate": "2026-09-29",
       "currency": "USD",
-      "peRatio": 22.69,
+      "peRatio": 22.46,
       "alertStatus": "none"
     },
     "CLH": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 311.6,
+      "previousClose": 313.26,
+      "asOfDate": "2026-09-29",
       "currency": "USD",
-      "peRatio": 37.99,
+      "peRatio": 37.68,
       "alertStatus": "none"
     },
     "IFX.DE": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 59.3,
+      "previousClose": 56.57,
+      "asOfDate": "2026-09-29",
       "currency": "EUR",
-      "peRatio": 69.79,
+      "peRatio": 72.32,
       "alertStatus": "none"
     },
     "LR.PA": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 143.05,
+      "previousClose": 134.85,
+      "asOfDate": "2026-09-29",
       "currency": "EUR",
-      "peRatio": 27.51,
-      "alertStatus": "none"
+      "peRatio": 28.84,
+      "alertStatus": "upper"
     },
     "SY1.DE": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 93.5,
+      "previousClose": 93.38,
+      "asOfDate": "2026-09-29",
       "currency": "EUR",
-      "peRatio": 52.17,
+      "peRatio": 52.82,
       "alertStatus": "none"
     },
     "WM": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 207.1087,
+      "previousClose": 206.44,
+      "asOfDate": "2026-09-29",
       "currency": "USD",
-      "peRatio": 29.25,
+      "peRatio": 29.34,
       "alertStatus": "none"
     },
     "WMS": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 128.49,
+      "previousClose": 130.78,
+      "asOfDate": "2026-09-29",
       "currency": "USD",
-      "peRatio": 22.64,
+      "peRatio": 21.89,
       "alertStatus": "none"
     }
   }
