@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-23T23:50:50+00:00",
+  "generatedAt": "2026-10-27T00:23:27+00:00",
   "quotes": {
     "AWK": {
-      "close": 142.75,
-      "previousClose": 143.23,
-      "asOfDate": "2026-10-23",
+      "close": null,
+      "previousClose": null,
+      "asOfDate": null,
       "currency": "USD",
       "peRatio": 24.74,
       "alertStatus": "none"
     },
     "CLH": {
-      "close": 318.76,
-      "previousClose": 320.96,
-      "asOfDate": "2026-10-23",
+      "close": null,
+      "previousClose": null,
+      "asOfDate": null,
       "currency": "USD",
       "peRatio": 38.45,
       "alertStatus": "none"
@@ -42,20 +42,20 @@
       "alertStatus": "none"
     },
     "WM": {
-      "close": 239.38,
-      "previousClose": 239.1,
-      "asOfDate": "2026-10-23",
+      "close": null,
+      "previousClose": null,
+      "asOfDate": null,
       "currency": "USD",
       "peRatio": 33.91,
-      "alertStatus": "upper"
+      "alertStatus": "none"
     },
     "WMS": {
-      "close": 130.4,
-      "previousClose": 130.92,
-      "asOfDate": "2026-10-23",
+      "close": null,
+      "previousClose": null,
+      "asOfDate": null,
       "currency": "USD",
       "peRatio": 22.21,
-      "alertStatus": "upper"
+      "alertStatus": "none"
     }
   }
 }
