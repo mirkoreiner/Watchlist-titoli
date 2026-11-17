@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-11-14T01:25:42+00:00",
+  "generatedAt": "2026-11-17T03:43:14+00:00",
   "quotes": {
     "AWK": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 151.36,
+      "previousClose": 149.6,
+      "asOfDate": "2026-11-16",
       "currency": "USD",
-      "peRatio": 25.82,
-      "alertStatus": "none"
+      "peRatio": 26.19,
+      "alertStatus": "upper"
     },
     "CLH": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 294.13,
+      "previousClose": 293.81,
+      "asOfDate": "2026-11-16",
       "currency": "USD",
-      "peRatio": 28.85,
+      "peRatio": 29.5,
       "alertStatus": "none"
     },
     "IFX.DE": {
@@ -42,19 +42,19 @@
       "alertStatus": "none"
     },
     "WM": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 244.33,
+      "previousClose": 243.83,
+      "asOfDate": "2026-11-16",
       "currency": "USD",
-      "peRatio": 31.01,
-      "alertStatus": "none"
+      "peRatio": 31.98,
+      "alertStatus": "upper"
     },
     "WMS": {
-      "close": null,
-      "previousClose": null,
-      "asOfDate": null,
+      "close": 121.13,
+      "previousClose": 125.58,
+      "asOfDate": "2026-11-16",
       "currency": "USD",
-      "peRatio": 22.06,
+      "peRatio": 22.27,
       "alertStatus": "none"
     }
   }
